@@ -29,9 +29,9 @@ export default function Page() {
   // --- End Placeholder for Minting Logic ---
 
   return (
-    <main className="min-h-screen bg-black text-white">
+    <main className="min-h-screen bg-black text-white flex flex-col items-center justify-start">
       {/* Header Section */}
-      <div className="text-center py-8">
+      <div className="text-center py-8 w-full">
         {/* Add the Image component here */}
         <div className="flex justify-center mb-2" style={{ marginTop: '-64px' }}>
           <Image
@@ -43,7 +43,7 @@ export default function Page() {
             className="rounded-lg shadow-lg"
           />
         </div>
-        <div style={{ textAlign: 'center', fontSize: '2.8em', fontWeight: 900, margin: '0 0 0.5em 0', letterSpacing: '0.03em' }}>
+        <div style={{ textAlign: 'center', fontSize: '2.8em', fontWeight: 900, margin: '0 0 0.5em 0', letterSpacing: '0.03em', width: '100%' }}>
           The Void Welcomes You...
         </div>
       </div>

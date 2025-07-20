@@ -547,26 +547,30 @@ const BoneDash = () => {
     if (!isRunning) return;
     const handleKeyDown = (e) => {
       if (e.code === 'Space') {
-        const state = gameState.current;
-        
-        // Allow jump if on ground or if jumps remaining
-        if (state.playerY >= GROUND_Y - PLAYER_SIZE - 2 || state.jumpsUsed < state.maxJumps) {
-          if (state.playerY >= GROUND_Y - PLAYER_SIZE - 2) {
-            // Ground jump
-            state.playerVY = JUMP_VELOCITY;
-            state.jumpsUsed = 1;
-          } else if (state.jumpsUsed < state.maxJumps) {
-            // Air jump
-            state.playerVY = JUMP_VELOCITY;
-            state.jumpsUsed++;
-          }
-        }
+        jump();
         e.preventDefault();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isRunning]);
+
+  // Add jump function for both keyboard and tap
+  const jump = () => {
+    const state = gameState.current;
+    // Allow jump if on ground or if jumps remaining
+    if (state.playerY >= GROUND_Y - PLAYER_SIZE - 2 || state.jumpsUsed < state.maxJumps) {
+      if (state.playerY >= GROUND_Y - PLAYER_SIZE - 2) {
+        // Ground jump
+        state.playerVY = JUMP_VELOCITY;
+        state.jumpsUsed = 1;
+      } else if (state.jumpsUsed < state.maxJumps) {
+        // Air jump
+        state.playerVY = JUMP_VELOCITY;
+        state.jumpsUsed++;
+      }
+    }
+  };
 
   // Reset game on username change
   useEffect(() => {
@@ -755,6 +759,38 @@ const BoneDash = () => {
         height={GAME_HEIGHT}
         style={{ border: '2px solid #333', background: '#111' }}
       />
+      {/* Mobile Tap-to-Jump Button */}
+      <div className="bone-dash-mobile-jump" style={{ marginTop: 16 }}>
+        <button
+          onClick={jump}
+          style={{
+            display: 'inline-block',
+            width: '90vw',
+            maxWidth: 400,
+            padding: '18px 0',
+            fontSize: '1.5em',
+            fontWeight: 700,
+            background: '#ff6b35',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 12,
+            boxShadow: '0 2px 8px #0008',
+            cursor: 'pointer',
+            margin: '0 auto',
+            zIndex: 10
+          }}
+        >
+          Tap to Jump
+        </button>
+      </div>
+      <style jsx>{`
+        @media (min-width: 700px) {
+          .bone-dash-mobile-jump { display: none; }
+        }
+        @media (max-width: 699px) {
+          .bone-dash-mobile-jump { display: block; }
+        }
+      `}</style>
       <div style={{ marginTop: 16 }}>
         <strong>Score:</strong> {score}
       </div>
