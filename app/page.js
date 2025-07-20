@@ -33,16 +33,25 @@ export default function Page() {
       {/* Header Section */}
       <div className="text-center py-8 w-full">
         {/* Add the Image component here */}
-        <div className="flex justify-center mb-2" style={{ marginTop: '-64px' }}>
+        <div className="flex justify-center mb-2 bored-bones-logo-wrapper" style={{ marginTop: '-64px' }}>
           <Image
             src="/images/boredboneslogo.png"
             alt="Bored Bones Logo"
             width={700}
             height={650}
             priority
-            className="rounded-lg shadow-lg"
+            className="rounded-lg shadow-lg bored-bones-logo"
           />
         </div>
+        <style jsx>{`
+          @media (max-width: 700px) {
+            .bored-bones-logo {
+              width: 90vw !important;
+              height: auto !important;
+              max-width: 350px !important;
+            }
+          }
+        `}</style>
         <div style={{ textAlign: 'center', fontSize: '2.8em', fontWeight: 900, margin: '0 0 0.5em 0', letterSpacing: '0.03em', width: '100%' }}>
           The Void Welcomes You...
         </div>
