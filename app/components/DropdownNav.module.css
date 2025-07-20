@@ -1,0 +1,41 @@
+    /* Style for the main container that holds the button and the menu */
+    .dropdownContainer {
+        position: fixed; /* This makes the container stay in the same spot even when you scroll */
+        top: 20px;      /* Position it 20 pixels from the top of the page */
+        right: 20px;    /* Position it 20 pixels from the right of the page */
+        z-index: 1000;  /* Make sure it appears on top of other things on the page */
+      }
+  
+      /* Style for the button that holds the skull icon */
+      .iconButton {
+        background: none; /* No background color */
+        border: none;     /* No border around the button */
+        padding: 0;       /* No extra space inside the button */
+        cursor: pointer;  /* Make the mouse cursor look like a hand when hovering */
+      }
+  
+      /* Style for the dropdown menu box */
+      .dropdownMenu {
+        position: absolute; /* Position the menu relative to its container (.dropdownContainer) */
+        top: 50px;        /* Place the menu 50 pixels below the top of the container (adjust if needed based on icon size) */
+        right: 0;         /* Align the right edge of the menu with the right edge of the container */
+        background-color: #2a2a2a; /* Darker background color for the menu */
+        border: 1px solid #555; /* A thin gray border */
+        padding: 10px;      /* Space inside the menu box */
+        display: flex;      /* Arrange the links in a column */
+        flex-direction: column; /* Stack the links vertically */
+        gap: 10px;          /* Add space between the links */
+      }
+  
+      /* Style for each link inside the dropdown menu */
+      .dropdownItem {
+        color: #cccccc;       /* Light gray text color (matches body text) */
+        text-decoration: none; /* Remove the underline from the links */
+        font-size: 1.2em;     /* Slightly larger text for the links */
+        white-space: nowrap;  /* Prevent the link text from wrapping */
+      }
+  
+      /* Style for links when you hover over them with the mouse */
+      .dropdownItem:hover {
+        color: #ffffff; /* Change color to pure white when hovered */
+      }

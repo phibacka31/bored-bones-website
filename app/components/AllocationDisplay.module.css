@@ -1,0 +1,150 @@
+.allocationContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px 12px;
+    color: #f5f5f5;
+    background: #111;
+    border-radius: 16px;
+  }
+  
+  .overallProgress {
+    margin-bottom: 32px;
+    text-align: center;
+  }
+  
+  .progressBar {
+    width: 100%;
+    height: 12px;
+    background: #222;
+    border-radius: 6px;
+    margin: 12px 0;
+    overflow: hidden;
+  }
+  
+  .progressFill {
+    height: 100%;
+    background: #6cf;
+    border-radius: 6px;
+    transition: width 0.3s;
+  }
+  
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    font-size: 1rem;
+    margin-top: 8px;
+  }
+  
+  .collectionsGrid {
+    margin-bottom: 32px;
+  }
+  
+  .allocationSummary {
+    display: flex;
+    gap: 32px;
+    font-size: 1rem;
+    margin-bottom: 12px;
+    justify-content: center;
+  }
+  
+  .collectionsList {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+  }
+  
+  .collectionCard {
+    background: #181818;
+    border-radius: 10px;
+    padding: 3px 2px;
+    max-width: 80px;
+    min-width: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 0.7rem;
+  }
+  
+  .collectionHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  
+  .collectionImagePlaceholder {
+    width: 14px;
+    height: 14px;
+    background: #333;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    color: #fff;
+    font-weight: bold;
+  }
+  
+  .collectionProgress {
+    width: 100%;
+  }
+  
+  .collectionProgress .progressBar {
+    height: 6px;
+    background: #222;
+    border-radius: 3px;
+    margin-top: 8px;
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  .collectionProgress .progressFill {
+    height: 100%;
+    background: #6cf;
+    border-radius: 3px;
+    transition: width 0.3s;
+  }
+  
+  .collectionStats {
+    font-size: 0.75rem;
+    color: #aaa;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 4px;
+  }
+  
+  .mintInfo {
+    margin-top: 32px;
+    background: #181818;
+    border-radius: 12px;
+    padding: 16px 12px;
+  }
+  
+  .mintDetails {
+    font-size: 1rem;
+    color: #eee;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  @media (max-width: 700px) {
+    .allocationContainer {
+      padding: 12px 2px;
+    }
+    .stats, .allocationSummary {
+      flex-direction: column;
+      gap: 8px;
+    }
+    .collectionsList {
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+    }
+    .collectionCard {
+      max-width: 100%;
+      padding: 8px 4px;
+    }
+  }

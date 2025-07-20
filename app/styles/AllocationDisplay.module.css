@@ -1,0 +1,192 @@
+.allocationContainer {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #0a0a0a;
+    border-radius: 15px;
+    margin-bottom: 30px;
+  }
+  
+  .overallProgress {
+    background: #1a1a1a;
+    padding: 25px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    border: 1px solid #333;
+  }
+  
+  .overallProgress h2 {
+    color: #fff;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  
+  .progressBar {
+    width: 100%;
+    height: 25px;
+    background: #333;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 15px 0;
+    border: 1px solid #444;
+  }
+  
+  .progressFill {
+    height: 100%;
+    background: linear-gradient(90deg, #ff6b35, #f7931e);
+    transition: width 0.5s ease;
+    border-radius: 12px;
+  }
+  
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+  }
+  
+  .stats p {
+    color: #ccc;
+    text-align: center;
+    margin: 0;
+    padding: 10px;
+    background: #222;
+    border-radius: 5px;
+  }
+  
+  .collectionsGrid {
+    margin-top: 30px;
+  }
+  
+  .collectionsGrid h3 {
+    color: #fff;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .allocationSummary {
+    background: #1a1a1a;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #333;
+  }
+  
+  .allocationSummary p {
+    color: #ccc;
+    text-align: center;
+    margin: 5px 0;
+    font-weight: bold;
+  }
+  
+  .collectionsList {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+  }
+  
+  .collectionCard {
+    background: #1a1a1a;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    border: 1px solid #333;
+    transition: transform 0.2s ease;
+  }
+  
+  .collectionCard:hover {
+    transform: translateY(-2px);
+    border-color: #ff6b35;
+  }
+  
+  .collectionImagePlaceholder {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    border: 2px solid #444;
+    background: #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff6b35;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .collectionCard h4 {
+    color: #fff;
+    margin-bottom: 15px;
+    font-size: 1.1em;
+  }
+  
+  .collectionProgress {
+    margin-top: 15px;
+  }
+  
+  .collectionStats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 15px;
+  }
+  
+  .collectionStats p {
+    color: #ccc;
+    font-size: 0.85em;
+    margin: 0;
+    padding: 5px;
+    background: #222;
+    border-radius: 3px;
+  }
+  
+  .mintInfo {
+    background: #1a1a1a;
+    padding: 25px;
+    border-radius: 10px;
+    margin-top: 30px;
+    border: 1px solid #333;
+  }
+  
+  .mintInfo h3 {
+    color: #fff;
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  
+  .mintDetails {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+  }
+  
+  .mintDetails p {
+    color: #ccc;
+    text-align: center;
+    margin: 8px 0;
+    padding: 10px;
+    background: #222;
+    border-radius: 5px;
+  }
+  
+  @media (max-width: 768px) {
+    .allocationContainer {
+      padding: 15px;
+    }
+    
+    .stats {
+      grid-template-columns: 1fr;
+    }
+    
+    .collectionStats {
+      grid-template-columns: 1fr;
+    }
+    
+    .collectionsList {
+      grid-template-columns: 1fr;
+    }
+    
+    .mintDetails {
+      grid-template-columns: 1fr;
+    }
+  }
