@@ -160,6 +160,8 @@ const BoneDash = () => {
   const [walletPrompt, setWalletPrompt] = useState(false);
   const [walletInput, setWalletInput] = useState('');
   const [walletError, setWalletError] = useState('');
+  const [walletLoading, setWalletLoading] = useState(false);
+  const [walletSuccess, setWalletSuccess] = useState(false);
 
   // Game assets
   const [assets, setAssets] = useState({
@@ -294,15 +296,20 @@ const BoneDash = () => {
   // Handle wallet form submission
   const handleWalletSubmit = async (e) => {
     e.preventDefault();
-    // Basic Ethereum address validation
     if (!/^0x[a-fA-F0-9]{40}$/.test(walletInput.trim())) {
       setWalletError('Please enter a valid Ethereum address (0x...)');
       return;
     }
-    await updateWallet(walletInput.trim());
-    setWalletPrompt(false);
+    setWalletLoading(true);
     setWalletError('');
-  }
+    await updateWallet(walletInput.trim());
+    setWalletSuccess(true);
+    setWalletLoading(false);
+    setTimeout(() => {
+      setWalletPrompt(false);
+      setWalletSuccess(false);
+    }, 1500);
+  };
 
   // Export leaderboard data for scraping
   const exportLeaderboardData = () => {
@@ -591,7 +598,6 @@ const BoneDash = () => {
           <p style={{ fontSize: '14px', color: '#ccc' }}>
             Submit your wallet address to be eligible for NFT minting
           </p>
-          
           <form onSubmit={handleWalletSubmit} style={{ marginTop: '20px' }}>
             <input
               type="text"
@@ -608,14 +614,25 @@ const BoneDash = () => {
                 backgroundColor: '#333',
                 color: 'white'
               }}
+              disabled={walletLoading || walletSuccess}
             />
-            {submissionStatus && (
+            {walletError && (
               <div style={{ 
                 marginBottom: '10px',
-                color: submissionStatus.includes('✅') ? '#28a745' : '#dc3545',
+                color: '#dc3545',
                 fontSize: '14px'
               }}>
-                {submissionStatus}
+                {walletError}
+              </div>
+            )}
+            {walletSuccess && (
+              <div style={{
+                marginBottom: '10px',
+                color: '#28a745',
+                fontSize: '14px',
+                fontWeight: 700
+              }}>
+                Wallet submitted!
               </div>
             )}
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
@@ -624,14 +641,16 @@ const BoneDash = () => {
                 style={{
                   padding: '12px 24px',
                   fontSize: '16px',
-                  backgroundColor: '#007bff',
+                  backgroundColor: walletLoading ? '#666' : '#007bff',
                   color: 'white',
                   border: 'none',
                   borderRadius: '6px',
-                  cursor: 'pointer'
+                  cursor: walletLoading || walletSuccess ? 'not-allowed' : 'pointer',
+                  opacity: walletLoading || walletSuccess ? 0.7 : 1
                 }}
+                disabled={walletLoading || walletSuccess}
               >
-                Submit Wallet
+                {walletLoading ? 'Submitting...' : walletSuccess ? 'Submitted!' : 'Submit Wallet'}
               </button>
               <button
                 type="button"
@@ -645,6 +664,7 @@ const BoneDash = () => {
                   borderRadius: '6px',
                   cursor: 'pointer'
                 }}
+                disabled={walletLoading}
               >
                 Skip for Now
               </button>
