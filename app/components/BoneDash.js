@@ -138,6 +138,14 @@ const BoneDash = () => {
     canJump: true,
   });
 
+  // Add loadImage function inside the component
+  const loadImage = (src) =>
+    new Promise((resolve) => {
+      const img = new window.Image();
+      img.src = src;
+      img.onload = () => resolve(img);
+    });
+
   // Competition status check function
   const checkCompetitionStatus = () => {
     const ended = isCompetitionEnded();
