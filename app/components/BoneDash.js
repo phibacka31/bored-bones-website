@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useRef, useEffect, useState } from 'react';
+import { supabase } from '../../lib/supabaseClient';
 
 const GAME_WIDTH = 400;
 const GAME_HEIGHT = 600;
@@ -40,16 +41,6 @@ const getStoredUsername = () => {
 const setStoredUsername = (username) => {
   if (typeof window === 'undefined') return;
   localStorage.setItem('boneDashUsername', username);
-};
-
-const getLeaderboard = () => {
-  if (typeof window === 'undefined') return [];
-  return JSON.parse(localStorage.getItem('boneDashLeaderboard') || '[]');
-};
-
-const setLeaderboard = (leaderboard) => {
-  if (typeof window === 'undefined') return;
-  localStorage.setItem('boneDashLeaderboard', JSON.stringify(leaderboard));
 };
 
 // Competition timer system
@@ -101,11 +92,11 @@ const isAdmin = () => {
   if (!playerId) return false;
   
   // Check if player has submitted a wallet that matches admin list
-  const lb = getLeaderboard();
-  const playerEntry = lb.find(entry => entry.playerId === playerId);
+  const lb = leaderboard; // Use the leaderboard state
+  const playerEntry = lb.find(entry => entry.player_id === playerId);
   
-  if (playerEntry?.walletAddress) {
-    return ADMIN_WALLET_ADDRESSES.includes(playerEntry.walletAddress.toLowerCase());
+  if (playerEntry?.wallet_address) {
+    return ADMIN_WALLET_ADDRESSES.includes(playerEntry.wallet_address.toLowerCase());
   }
   
   return false;
@@ -163,7 +154,7 @@ const BoneDash = () => {
 
   const [score, setScore] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
-  const [leaderboard, setLeaderboardState] = useState(getLeaderboard());
+  const [leaderboard, setLeaderboardState] = useState([]);
   const [gameOver, setGameOver] = useState(false);
   // Add state for wallet submission
   const [walletPrompt, setWalletPrompt] = useState(false);
@@ -301,36 +292,27 @@ const BoneDash = () => {
   };
 
   // Handle wallet form submission
-  function handleWalletSubmit(e) {
+  const handleWalletSubmit = async (e) => {
     e.preventDefault();
     // Basic Ethereum address validation
     if (!/^0x[a-fA-F0-9]{40}$/.test(walletInput.trim())) {
       setWalletError('Please enter a valid Ethereum address (0x...)');
       return;
     }
-    // Update leaderboard with wallet address
-    setLeaderboardState(lb => {
-      const updated = lb.map(entry =>
-        entry.score === score && entry.username === username
-          ? { ...entry, walletAddress: walletInput.trim() }
-          : entry
-      );
-      setLeaderboard(updated);
-      return updated;
-    });
+    await updateWallet(walletInput.trim());
     setWalletPrompt(false);
     setWalletError('');
   }
 
   // Export leaderboard data for scraping
   const exportLeaderboardData = () => {
-    const lb = getLeaderboard();
+    const lb = leaderboard;
     const walletsWithData = lb
-      .filter(entry => entry.walletAddress)
+      .filter(entry => entry.wallet_address)
       .map(entry => ({
         rank: lb.indexOf(entry) + 1,
         username: entry.username,
-        wallet: entry.walletAddress,
+        wallet: entry.wallet_address,
         score: entry.score,
         timestamp: entry.timestamp
       }));
@@ -449,46 +431,18 @@ const BoneDash = () => {
           // Calculate final score
           const finalScoreValue = Math.floor(state.time);
           setFinalScore(finalScoreValue);
+          upsertScore(finalScoreValue);
           
           // Always save score and prompt for wallet (since you're the only player)
           if (playerId && username.trim()) {
-            let lb = getLeaderboard();
-            
-            // Check if this player already has a higher score
-            const existingEntry = lb.find((entry) => entry.playerId === playerId);
-            if (!existingEntry || finalScoreValue > existingEntry.score) {
-              // Remove old entry if exists
-              lb = lb.filter((entry) => entry.playerId !== playerId);
-              
-              // Add new entry with secure data
-              lb.push({
-                playerId,
-                username: username.trim(),
-                score: finalScoreValue,
-                timestamp: Date.now(),
-                gameDuration: (Date.now() - state.gameStartTime) / 1000,
-                obstaclesHit: state.obstaclesHit,
-                sessionId: `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-                walletAddress: existingEntry?.walletAddress || null // Preserve existing wallet address
-              });
-              
-              // Sort by score (highest first) and keep only top 28
-              lb.sort((a, b) => b.score - a.score);
-              lb = lb.slice(0, 28);
-              
-              setLeaderboard(lb);
-              setLeaderboardState(lb);
-              
-              // Get player rank
-              const playerRank = lb.findIndex(entry => entry.playerId === playerId) + 1;
-              const playerEntry = lb.find(entry => entry.playerId === playerId);
-              
-              // Always prompt for wallet if they don't have one
-              if (!playerEntry?.walletAddress) {
-                setCurrentRank(playerRank);
-                setAchievedTop28(true);
-                setShowWalletForm(true);
-              }
+            // The leaderboard update logic is now handled by upsertScore
+            // and updateWallet, so we just need to check if the player
+            // already has a wallet address.
+            const playerEntry = leaderboard.find(entry => entry.player_id === playerId);
+            if (!playerEntry?.wallet_address) {
+              setCurrentRank(leaderboard.findIndex(entry => entry.player_id === playerId) + 1);
+              setAchievedTop28(true);
+              setShowWalletForm(true);
             }
           }
           return;
@@ -583,9 +537,9 @@ const BoneDash = () => {
     setScore(0);
   }, [username]);
 
-  // Refresh leaderboard when it changes
+  // Fetch leaderboard when it changes
   useEffect(() => {
-    setLeaderboardState(getLeaderboard());
+    fetchLeaderboard();
   }, []);
 
   // After game over, check if score is top 28 and show prompt
@@ -595,7 +549,7 @@ const BoneDash = () => {
       const sorted = [...leaderboard].sort((a, b) => b.score - a.score);
       const top28 = sorted.slice(0, 28);
       const isTop28 = top28.some(entry => entry.score === score && entry.username === username);
-      const alreadyHasWallet = top28.find(entry => entry.score === score && entry.username === username && entry.walletAddress);
+      const alreadyHasWallet = top28.find(entry => entry.score === score && entry.username === username && entry.wallet_address);
       if (isTop28 && !alreadyHasWallet) {
         setWalletPrompt(true);
       } else {
@@ -979,12 +933,12 @@ const BoneDash = () => {
             </div>
           ) : (
             leaderboard.slice(0, 28).map((entry, idx) => (
-              <div key={entry.sessionId} style={{
+              <div key={entry.player_id} style={{
                 background: idx === 0 ? '#ffd700' : idx === 1 ? '#c0c0c0' : idx === 2 ? '#cd7f32' : '#333',
                 color: idx < 3 ? '#000' : '#fff',
                 padding: '12px',
                 borderRadius: '8px',
-                border: playerId === entry.playerId ? '2px solid #ff6b6b' : '1px solid #444',
+                border: playerId === entry.player_id ? '2px solid #ff6b6b' : '1px solid #444',
                 position: 'relative'
               }}>
                 <div style={{ 
@@ -1012,7 +966,7 @@ const BoneDash = () => {
                 }}>
                   {entry.score}
                 </div>
-                {entry.walletAddress && (
+                {entry.wallet_address && (
                   <div style={{ 
                     textAlign: 'center', 
                     fontSize: '10px',
@@ -1020,12 +974,12 @@ const BoneDash = () => {
                     color: idx < 3 ? '#666' : '#28a745'
                   }}>
                     {competitionEnded 
-                      ? `${entry.walletAddress.slice(0, 6)}...${entry.walletAddress.slice(-4)}`
+                      ? `${entry.wallet_address.slice(0, 6)}...${entry.wallet_address.slice(-4)}`
                       : 'Wallet Submitted ✓'
                     }
                   </div>
                 )}
-                {playerId === entry.playerId && (
+                {playerId === entry.player_id && (
                   <div style={{ 
                     position: 'absolute', 
                     top: '4px', 
