@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
+import { isAddress } from 'ethers';
 
 const GAME_WIDTH = 400;
 const GAME_HEIGHT = 600;
@@ -302,10 +303,9 @@ const BoneDash = () => {
   const handleWalletSubmit = async (e) => {
     e.preventDefault();
     const trimmed = walletInput.trim();
-    console.log('Validating wallet:', trimmed);
-    // Improved Ethereum address validation
-    if (!/^0x[a-fA-F0-9]{40}$/.test(trimmed)) {
-      setWalletError('Please enter a valid Ethereum address (must start with 0x and be 42 characters)');
+    console.log('Validating wallet:', trimmed, 'Length:', trimmed.length);
+    if (!isAddress(trimmed)) {
+      setWalletError('Please enter a valid Ethereum address.');
       return;
     }
     setWalletLoading(true);
