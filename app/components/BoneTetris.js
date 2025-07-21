@@ -238,6 +238,38 @@ export default function BoneTetris() {
     setStarted(true);
   };
 
+  // Add mobile controls for Tetris
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 700;
+  const moveLeft = () => {
+    let { shape, pos } = currentRef.current;
+    const nextPos = { row: pos.row, col: pos.col - 1 };
+    if (canMove(board, shape, nextPos)) {
+      setCurrent(cur => ({ ...cur, pos: nextPos }));
+    }
+  };
+  const moveRight = () => {
+    let { shape, pos } = currentRef.current;
+    const nextPos = { row: pos.row, col: pos.col + 1 };
+    if (canMove(board, shape, nextPos)) {
+      setCurrent(cur => ({ ...cur, pos: nextPos }));
+    }
+  };
+  const rotatePiece = () => {
+    let { shape, pos } = currentRef.current;
+    const rotated = rotate(shape);
+    if (canMove(board, rotated, pos)) {
+      setCurrent(cur => ({ ...cur, shape: rotated }));
+    }
+  };
+  const dropPiece = () => {
+    let { shape, pos } = currentRef.current;
+    let nextRow = pos.row;
+    while (canMove(board, shape, { row: nextRow + 1, col: pos.col })) {
+      nextRow++;
+    }
+    setCurrent(cur => ({ ...cur, pos: { ...pos, row: nextRow } }));
+  };
+
   // Render
   const mergedBoard = getMergedBoard();
 
@@ -291,10 +323,41 @@ export default function BoneTetris() {
             color: '#222',
             fontWeight: 'bold',
           }}>
-            {cell ? '🦴' : ''}
+            {cell ? '\ud83e\uddb4' : ''}
           </div>
         ))}
       </div>
+      {/* Mobile Controls */}
+      <div className="bone-tetris-mobile-controls">
+        <button onClick={moveLeft} aria-label="Move Left">⬅️</button>
+        <button onClick={rotatePiece} aria-label="Rotate">⟳</button>
+        <button onClick={moveRight} aria-label="Move Right">➡️</button>
+        <button onClick={dropPiece} aria-label="Drop">⬇️</button>
+      </div>
+      <style jsx>{`
+        @media (min-width: 700px) {
+          .bone-tetris-mobile-controls { display: none; }
+        }
+        @media (max-width: 699px) {
+          .bone-tetris-mobile-controls {
+            display: flex;
+            justify-content: center;
+            gap: 1.2em;
+            margin-top: 1.2em;
+          }
+          .bone-tetris-mobile-controls button {
+            font-size: 2em;
+            padding: 0.4em 0.7em;
+            border-radius: 10px;
+            border: none;
+            background: #2d133b;
+            color: #fff;
+            box-shadow: 0 2px 8px #0008;
+            font-weight: bold;
+            cursor: pointer;
+          }
+        }
+      `}</style>
       <div style={{ color: '#fff', marginTop: 16, fontSize: '1.2em' }}>Score: {score}</div>
       {gameOver && (
         <div style={{ color: '#ff4444', marginTop: 16, fontWeight: 'bold', fontSize: '1.2em', textAlign: 'center' }}>

@@ -155,7 +155,7 @@ const SkullMines = () => {
   };
 
   return (
-    <div className="skull-mines-container" style={{ 
+    <div className="skull-mines-container-responsive skull-mines-container" style={{ 
       position: 'relative', 
       display: 'inline-block',
       padding: '0',
@@ -320,6 +320,21 @@ const SkullMines = () => {
           Left-click to reveal. Right-click (or two-finger tap) to flag suspected skulls.
         </p>
       </div>
+      <style jsx>{`
+        @media (max-width: 700px) {
+          .skull-mines-container-responsive {
+            min-width: 0 !important;
+            width: 98vw !important;
+            padding: 0 !important;
+          }
+          .game-board {
+            transform: scale(0.7);
+            transform-origin: top center;
+            width: 100vw !important;
+            overflow-x: auto;
+          }
+        }
+      `}</style>
     </div>
   );
 };
