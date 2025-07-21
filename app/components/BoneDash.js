@@ -301,13 +301,16 @@ const BoneDash = () => {
   // Handle wallet form submission
   const handleWalletSubmit = async (e) => {
     e.preventDefault();
-    if (!/^0x[a-fA-F0-9]{40}$/.test(walletInput.trim())) {
-      setWalletError('Please enter a valid Ethereum address (0x...)');
+    const trimmed = walletInput.trim();
+    console.log('Validating wallet:', trimmed);
+    // Improved Ethereum address validation
+    if (!/^0x[a-fA-F0-9]{40}$/.test(trimmed)) {
+      setWalletError('Please enter a valid Ethereum address (must start with 0x and be 42 characters)');
       return;
     }
     setWalletLoading(true);
     setWalletError('');
-    await updateWallet(walletInput.trim());
+    await updateWallet(trimmed);
     setWalletSuccess(true);
     setWalletLoading(false);
     setTimeout(() => {
