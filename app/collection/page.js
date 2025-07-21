@@ -36,7 +36,7 @@ export default function CollectionPage() {
     <main style={{ padding: '2em' }}>
       <h1 style={{ textAlign: 'center', marginBottom: '1em', fontSize: '3.5em', fontWeight: 900, letterSpacing: '0.04em' }}>Bone Explorer</h1>
       {/* Filters UI as dropdowns */}
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '1em', marginBottom: '1em', flexWrap: 'nowrap', maxWidth: 900, marginLeft: 'auto', marginRight: 'auto' }}>
+      <div className="bone-explorer-dropdown-row">
         {['Background', 'Bone', 'Clothing', 'Mouth'].map(trait => (
           <div key={trait} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 120 }}>
             <label htmlFor={trait} style={{ color: '#fff', marginBottom: 4, fontSize: '0.97em' }}>{trait}</label>
@@ -53,7 +53,7 @@ export default function CollectionPage() {
           </div>
         ))}
       </div>
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '1em', marginBottom: '2em', flexWrap: 'nowrap', maxWidth: 700, marginLeft: 'auto', marginRight: 'auto' }}>
+      <div className="bone-explorer-dropdown-row">
         {['Eyes', 'Headwear', 'Accessories'].map(trait => (
           <div key={trait} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', minWidth: 120 }}>
             <label htmlFor={trait} style={{ color: '#fff', marginBottom: 4, fontSize: '0.97em' }}>{trait}</label>
@@ -70,6 +70,27 @@ export default function CollectionPage() {
           </div>
         ))}
       </div>
+      <style jsx>{`
+        .bone-explorer-dropdown-row {
+          display: flex;
+          justify-content: center;
+          gap: 1em;
+          margin-bottom: 1em;
+          flex-wrap: nowrap;
+          max-width: 900px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        @media (max-width: 700px) {
+          .bone-explorer-dropdown-row {
+            flex-wrap: wrap;
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.5em;
+            max-width: 98vw;
+          }
+        }
+      `}</style>
       {/* Bone Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '2em', maxWidth: 1000, margin: '0 auto' }}>
         {filteredBones.map(bone => (
