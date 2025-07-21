@@ -1,3 +1,4 @@
+"use client";
 import Image from 'next/image'; // Import the Image component
 
 export default function LorePage() {
