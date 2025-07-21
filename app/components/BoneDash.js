@@ -303,7 +303,7 @@ const BoneDash = () => {
   const handleWalletSubmit = async (e) => {
     e.preventDefault();
     const trimmed = walletInput.trim();
-    console.log('Validating wallet:', trimmed, 'Length:', trimmed.length);
+    console.log('Validating wallet:', trimmed, 'Length:', trimmed.length, 'isAddress:', isAddress(trimmed));
     if (!isAddress(trimmed)) {
       setWalletError('Please enter a valid Ethereum address.');
       return;
