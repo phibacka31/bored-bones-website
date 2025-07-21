@@ -187,6 +187,28 @@ const BoneDash = () => {
     if (!error) setLeaderboardState(data || []);
   };
 
+  // Upsert score to Supabase
+  const upsertScore = async (score) => {
+    if (!playerId || !username.trim()) return;
+    await supabase.from('leaderboard').upsert([
+      {
+        player_id: playerId,
+        username: username.trim(),
+        score,
+        timestamp: new Date().toISOString(),
+      }
+    ], { onConflict: ['player_id'] });
+    // Fetch the updated leaderboard after upsert
+    fetchLeaderboard();
+  };
+
+  // Update wallet address in Supabase
+  const updateWallet = async (walletAddress) => {
+    if (!playerId) return;
+    await supabase.from('leaderboard').update({ wallet_address: walletAddress }).eq('player_id', playerId);
+    fetchLeaderboard();
+  };
+
   // Initialize player ID and check for stored username
   useEffect(() => {
     const id = getPlayerId();
