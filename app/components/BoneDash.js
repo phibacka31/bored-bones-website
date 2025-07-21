@@ -177,6 +177,16 @@ const BoneDash = () => {
     return false;
   };
 
+  // Add fetchLeaderboard function inside the component
+  const fetchLeaderboard = async () => {
+    const { data, error } = await supabase
+      .from('leaderboard')
+      .select('*')
+      .order('score', { ascending: false })
+      .limit(28);
+    if (!error) setLeaderboardState(data || []);
+  };
+
   // Initialize player ID and check for stored username
   useEffect(() => {
     const id = getPlayerId();
