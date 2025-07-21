@@ -178,10 +178,18 @@ export default function BoneTetris() {
   // Game loop
   useEffect(() => {
     if (!started || gameOver) return;
-    const interval = setInterval(() => {
-      drop();
-    }, intervalMs);
-    return () => clearInterval(interval);
+    let animationId;
+    let lastTime = performance.now();
+    function animate(now) {
+      if (!started || gameOver) return;
+      if (now - lastTime >= intervalMs) {
+        drop();
+        lastTime = now;
+      }
+      animationId = requestAnimationFrame(animate);
+    }
+    animationId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationId);
   }, [intervalMs, gameOver, started, drop]);
 
   // Keyboard controls
@@ -329,10 +337,10 @@ export default function BoneTetris() {
       </div>
       {/* Mobile Controls */}
       <div className="bone-tetris-mobile-controls">
-        <button onClick={moveLeft} aria-label="Move Left">⬅️</button>
-        <button onClick={rotatePiece} aria-label="Rotate">⟳</button>
-        <button onClick={moveRight} aria-label="Move Right">➡️</button>
-        <button onClick={dropPiece} aria-label="Drop">⬇️</button>
+        <button onClick={moveLeft} onTouchStart={e => e.preventDefault()} aria-label="Move Left">⬅️</button>
+        <button onClick={rotatePiece} onTouchStart={e => e.preventDefault()} aria-label="Rotate">⟳</button>
+        <button onClick={moveRight} onTouchStart={e => e.preventDefault()} aria-label="Move Right">➡️</button>
+        <button onClick={dropPiece} onTouchStart={e => e.preventDefault()} aria-label="Drop">⬇️</button>
       </div>
       <style jsx>{`
         @media (min-width: 700px) {
