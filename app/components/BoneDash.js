@@ -309,11 +309,15 @@ const BoneDash = () => {
       return;
     }
     // Update leaderboard with wallet address
-    setLeaderboardState(lb => lb.map(entry =>
-      entry.score === score && entry.username === username
-        ? { ...entry, walletAddress: walletInput.trim() }
-        : entry
-    ));
+    setLeaderboardState(lb => {
+      const updated = lb.map(entry =>
+        entry.score === score && entry.username === username
+          ? { ...entry, walletAddress: walletInput.trim() }
+          : entry
+      );
+      setLeaderboard(updated);
+      return updated;
+    });
     setWalletPrompt(false);
     setWalletError('');
   }
