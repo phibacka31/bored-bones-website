@@ -86,55 +86,6 @@ const ADMIN_WALLET_ADDRESSES = [
   // You can add multiple admin wallets
 ];
 
-const isAdmin = () => {
-  // Check if current player is admin
-  const playerId = getPlayerId();
-  if (!playerId) return false;
-  
-  // Check if player has submitted a wallet that matches admin list
-  const lb = leaderboard; // Use the leaderboard state
-  const playerEntry = lb.find(entry => entry.player_id === playerId);
-  
-  if (playerEntry?.wallet_address) {
-    return ADMIN_WALLET_ADDRESSES.includes(playerEntry.wallet_address.toLowerCase());
-  }
-  
-  return false;
-};
-
-const validateScore = (score, gameTime, obstaclesHit) => {
-  // Basic anti-cheat: score should roughly match game time
-  const expectedScore = Math.floor(gameTime);
-  const scoreDiff = Math.abs(score - expectedScore);
-  
-  // Allow small variance due to frame rate differences
-  if (scoreDiff > 5) {
-    console.warn('Suspicious score detected:', score, 'expected:', expectedScore);
-    return false;
-  }
-  
-  // Check for reasonable game duration (minimum 1 second, maximum 10 minutes)
-  if (gameTime < 1 || gameTime > 600) {
-    console.warn('Suspicious game duration:', gameTime);
-    return false;
-  }
-  
-  return true;
-};
-
-const validateWalletAddress = (address) => {
-  // Basic Ethereum address validation
-  const ethAddressRegex = /^0x[a-fA-F0-9]{40}$/;
-  return ethAddressRegex.test(address);
-};
-
-const loadImage = (src) =>
-  new Promise((resolve) => {
-    const img = new window.Image();
-    img.src = src;
-    img.onload = () => resolve(img);
-  });
-
 const BoneDash = () => {
   const canvasRef = useRef(null);
   const animationRef = useRef(null);
@@ -202,6 +153,20 @@ const BoneDash = () => {
   const checkAdminStatus = () => {
     const adminStatus = isAdmin();
     setIsAdminUser(adminStatus);
+  };
+
+  // Move isAdmin inside the component so it can access leaderboard
+  const isAdmin = () => {
+    // Check if current player is admin
+    const playerId = getPlayerId();
+    if (!playerId) return false;
+    // Check if player has submitted a wallet that matches admin list
+    const lb = leaderboard; // Use the leaderboard state
+    const playerEntry = lb.find(entry => entry.player_id === playerId);
+    if (playerEntry?.wallet_address) {
+      return ADMIN_WALLET_ADDRESSES.includes(playerEntry.wallet_address.toLowerCase());
+    }
+    return false;
   };
 
   // Initialize player ID and check for stored username
