@@ -94,7 +94,6 @@ const BoneDash = () => {
   const [showUsernameInput, setShowUsernameInput] = useState(true);
   const [playerId, setPlayerId] = useState(null);
   const [showWalletForm, setShowWalletForm] = useState(false);
-  const [walletAddress, setWalletAddress] = useState('');
   const [achievedTop28, setAchievedTop28] = useState(false);
   const [currentRank, setCurrentRank] = useState(null);
   const [submissionStatus, setSubmissionStatus] = useState('');
@@ -609,8 +608,8 @@ const BoneDash = () => {
           <form onSubmit={handleWalletSubmit} style={{ marginTop: '20px' }}>
             <input
               type="text"
-              value={walletAddress}
-              onChange={(e) => setWalletAddress(e.target.value)}
+              value={walletInput}
+              onChange={e => setWalletInput(e.target.value)}
               placeholder="Enter your wallet address (0x...)"
               style={{
                 width: '100%',
