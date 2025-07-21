@@ -46,9 +46,9 @@ export default function Page() {
         <style jsx>{`
           @media (max-width: 700px) {
             .bored-bones-logo {
-              width: 90vw !important;
+              width: 45vw !important;
               height: auto !important;
-              max-width: 350px !important;
+              max-width: 175px !important;
             }
           }
         `}</style>
