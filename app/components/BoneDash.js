@@ -114,6 +114,7 @@ const BoneDash = () => {
   const [walletLoading, setWalletLoading] = useState(false);
   const [walletSuccess, setWalletSuccess] = useState(false);
   const [walletJustSubmitted, setWalletJustSubmitted] = useState(false);
+  const [hasSubmittedWallet, setHasSubmittedWallet] = useState(false);
 
   // Game assets
   const [assets, setAssets] = useState({
@@ -313,11 +314,12 @@ const BoneDash = () => {
     await updateWallet(trimmed);
     setWalletSuccess(true);
     setWalletLoading(false);
-    setWalletJustSubmitted(true);
+    setHasSubmittedWallet(true);
     setTimeout(() => {
       setWalletPrompt(false);
       setWalletSuccess(false);
       setWalletJustSubmitted(false);
+      setWalletInput('');
     }, 1000); // Close modal after 1 second
   };
 
@@ -561,21 +563,24 @@ const BoneDash = () => {
 
   // After game over, check if score is top 28 and show prompt
   useEffect(() => {
-    if (gameOver && score > 0 && !walletJustSubmitted) {
+    if (gameOver && score > 0 && !walletJustSubmitted && !hasSubmittedWallet) {
       // Check if score is in top 28 and player hasn't submitted wallet
       const sorted = [...leaderboard].sort((a, b) => b.score - a.score);
       const top28 = sorted.slice(0, 28);
-      const isTop28 = top28.some(entry => entry.score === score && entry.username === username);
-      const alreadyHasWallet = top28.find(entry => entry.score === score && entry.username === username && entry.wallet_address);
-      if (isTop28 && !alreadyHasWallet) {
+      const playerEntry = top28.find(entry => entry.score === score && entry.username === username);
+      const alreadyHasWallet = playerEntry && playerEntry.wallet_address;
+      if (playerEntry && !alreadyHasWallet) {
         setWalletPrompt(true);
       } else {
         setWalletPrompt(false);
       }
+      if (playerEntry && alreadyHasWallet) {
+        setHasSubmittedWallet(true);
+      }
     } else {
       setWalletPrompt(false);
     }
-  }, [gameOver, score, leaderboard, username, walletJustSubmitted]);
+  }, [gameOver, score, leaderboard, username, walletJustSubmitted, hasSubmittedWallet]);
 
   // Wallet form modal
   if (showWalletForm) {
