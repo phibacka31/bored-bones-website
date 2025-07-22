@@ -113,6 +113,7 @@ const BoneDash = () => {
   const [walletError, setWalletError] = useState('');
   const [walletLoading, setWalletLoading] = useState(false);
   const [walletSuccess, setWalletSuccess] = useState(false);
+  const [walletJustSubmitted, setWalletJustSubmitted] = useState(false);
 
   // Game assets
   const [assets, setAssets] = useState({
@@ -312,9 +313,11 @@ const BoneDash = () => {
     await updateWallet(trimmed);
     setWalletSuccess(true);
     setWalletLoading(false);
+    setWalletJustSubmitted(true);
     setTimeout(() => {
       setWalletPrompt(false);
       setWalletSuccess(false);
+      setWalletJustSubmitted(false);
     }, 1000); // Close modal after 1 second
   };
 
@@ -558,7 +561,7 @@ const BoneDash = () => {
 
   // After game over, check if score is top 28 and show prompt
   useEffect(() => {
-    if (gameOver && score > 0) {
+    if (gameOver && score > 0 && !walletJustSubmitted) {
       // Check if score is in top 28 and player hasn't submitted wallet
       const sorted = [...leaderboard].sort((a, b) => b.score - a.score);
       const top28 = sorted.slice(0, 28);
@@ -572,7 +575,7 @@ const BoneDash = () => {
     } else {
       setWalletPrompt(false);
     }
-  }, [gameOver, score, leaderboard, username]);
+  }, [gameOver, score, leaderboard, username, walletJustSubmitted]);
 
   // Wallet form modal
   if (showWalletForm) {
