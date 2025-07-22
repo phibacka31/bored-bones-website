@@ -315,7 +315,7 @@ const BoneDash = () => {
     setTimeout(() => {
       setWalletPrompt(false);
       setWalletSuccess(false);
-    }, 1500);
+    }, 1000); // Close modal after 1 second
   };
 
   // Export leaderboard data for scraping
