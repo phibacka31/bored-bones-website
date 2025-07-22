@@ -315,11 +315,12 @@ const BoneDash = () => {
     setWalletSuccess(true);
     setWalletLoading(false);
     setHasSubmittedWallet(true);
-    setWalletPrompt(false);
+    setWalletPrompt(false); // Immediately close the modal
+    setWalletInput('');
+    setWalletError('');
     setTimeout(() => {
       setWalletSuccess(false);
-      setWalletInput('');
-    }, 1000); // Close modal after 1 second
+    }, 1000); // Only show success for 1 second
   };
 
   // Export leaderboard data for scraping
@@ -582,7 +583,7 @@ const BoneDash = () => {
   }, [gameOver, score, leaderboard, username, hasSubmittedWallet]);
 
   // Wallet form modal
-  if (showWalletForm) {
+  if (showWalletForm && !hasSubmittedWallet) {
     return (
       <div style={{
         position: 'fixed',
@@ -615,6 +616,8 @@ const BoneDash = () => {
           <form onSubmit={handleWalletSubmit} style={{ marginTop: '20px' }}>
             <input
               type="text"
+              name="wallet"
+              id="wallet"
               value={walletInput}
               onChange={e => setWalletInput(e.target.value)}
               placeholder="Enter your wallet address (0x...)"
@@ -629,6 +632,7 @@ const BoneDash = () => {
                 color: 'white'
               }}
               disabled={walletLoading || walletSuccess}
+              autoComplete="off"
             />
             {walletError && (
               <div style={{ 
@@ -668,7 +672,7 @@ const BoneDash = () => {
               </button>
               <button
                 type="button"
-                onClick={() => setShowWalletForm(false)}
+                onClick={() => { setShowWalletForm(false); setWalletInput(''); setWalletError(''); }}
                 style={{
                   padding: '12px 24px',
                   fontSize: '16px',
